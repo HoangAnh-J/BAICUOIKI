@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Socket Chat</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .chat-container {
+      background: white;
+      width: 400px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      padding: 20px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      font-size: 24px;
+      color: #333;
+    }
+
+    #chat {
+      list-style: none;
+      padding: 0;
+      height: 200px;
+      overflow-y: auto;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    #chat li {
+      padding: 8px;
+      font-size: 18px;
+      border-bottom: 1px solid #f1f1f1;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    #msg {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #667eea;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #5563c1;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="chat-container">
+  <h2>💬 Realtime Chat</h2>
+
+  <ul id="chat"></ul>
+
+  <div class="input-group">
+    <input id="msg" placeholder="Nhập tin nhắn..." />
+    <button onclick="send()">Gửi</button>
+  </div>
+</div>
+
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
+<script>
+  const socket = io("http://localhost:3000");
+
+  socket.on("receive_message", (data) => {
+    const li = document.createElement("li");
+    li.innerText = data;
+    document.getElementById("chat").appendChild(li);
+  });
+
+  function send() {
+    const msg = document.getElementById("msg").value;
+    if (!msg) return;
+
+    socket.emit("send_message", msg);
+    document.getElementById("msg").value = "";
+  }
+</script>
+
+</body>
+</html>
